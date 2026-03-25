@@ -3,5 +3,5 @@
 - Quick Start:
 ```console
   cargo build --release
-   ./target/release/editor
+  ./target/release/editor
 ```
