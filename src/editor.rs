@@ -37,43 +37,32 @@ impl Editor {
         }
     }
 
-    pub fn eval(&mut self, action: EditorAction) {
+    pub fn eval(&mut self, action: EditorAction) -> () {
+        use Direction::*;
+        use EditorAction::*;
+
         match action {
-            EditorAction::Save => {}
-            EditorAction::Unhandled(_) => {}
-            EditorAction::Move(Direction::Up) => {
-                if self.can_move_up() {
-                    self.line -= 1;
-                    self.snap_column();
-                }
+            Save => {}
+            Unhandled(_) => {}
+            Move(Up) => {
+                self.move_up();
             }
-            EditorAction::Move(Direction::Down) => {
-                if self.can_move_down() {
-                    self.line += 1;
-                    self.snap_column();
-                }
+            Move(Down) => {
+                self.move_down();
             }
-            EditorAction::Move(Direction::Right) => {
-                if self.can_move_right() {
-                    self.column += 1;
-                }
+            Move(Right) => {
+                self.move_right();
             }
-            EditorAction::Move(Direction::Left) => {
-                if self.can_move_left() {
-                    self.column -= 1;
-                }
+            Move(Left) => {
+                self.move_left();
             }
-            EditorAction::Insert(c) => {
-                let idx = self.get_buffer_index();
-                self.content.insert(idx, c);
-                self.column += 1;
+            Insert(c) => {
+                self.insert_char(c);
             }
-            EditorAction::Backspace => {
-                if self.can_backspace() {
-                    self.perform_backspace();
-                }
+            Backspace => {
+                self.perform_backspace();
             }
-            EditorAction::Quit => self.running = false,
+            Quit => self.running = false,
         }
     }
 
@@ -113,16 +102,65 @@ impl Editor {
             + self.column
     }
 
-    fn perform_backspace(&mut self) {
+    fn perform_backspace(&mut self) -> bool {
         let index = self.get_buffer_index();
-        if index > 0 {
-            self.content.remove(index - 1);
-            if self.column > 0 {
-                self.column -= 1;
-            } else {
-                self.line -= 1;
-                self.snap_column();
+        if self.can_backspace() {
+            if index > 0 {
+                self.content.remove(index - 1);
+                if self.column > 0 {
+                    self.column -= 1;
+                } else {
+                    self.line -= 1;
+                    self.snap_column();
+                }
             }
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    fn move_up(&mut self) -> bool {
+        if self.can_move_up() {
+            self.line -= 1;
+            self.snap_column();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fn move_down(&mut self) -> bool {
+        if self.can_move_down() {
+            self.line += 1;
+            self.snap_column();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fn move_right(&mut self) -> bool {
+        if self.can_move_right() {
+            self.column += 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fn move_left(&mut self) -> bool {
+        if self.can_move_left() {
+            self.column -= 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fn insert_char(&mut self, c: char) {
+        let idx = self.get_buffer_index();
+        self.content.insert(idx, c);
+        self.column += 1;
     }
 }
