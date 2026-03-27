@@ -11,7 +11,7 @@ use crossterm::{
     },
 };
 
-use editor::{Direction, Editor, EditorAction, LowerInput};
+use editor::{Command, Direction, Editor, EditorAction, LowerInput};
 
 struct TerminalEditor;
 
@@ -20,7 +20,7 @@ impl LowerInput for TerminalEditor {
         if let Ok(Event::Key(key)) = event::read() {
             return match key.code {
                 KeyCode::Char('q') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                    Some(EditorAction::Quit)
+                    Some(EditorAction::Run(Command::Quit))
                 }
                 KeyCode::Up => Some(EditorAction::Move(Direction::Up)),
                 KeyCode::Down => Some(EditorAction::Move(Direction::Down)),

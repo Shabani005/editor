@@ -6,13 +6,36 @@ pub enum Direction {
     Right,
 }
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Command {
+    Quit,
+    Save,
+    OpenFile,
+    NewBuffer,
+    SwitchBuffer,
+    Copy,
+    Cut,
+    Paste,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Macro {
+    SelectChar,
+    SelectLine,
+    SelectAll,
+    SelectUntilBufferEnd,
+    SelectUntilBufferStart,
+    SelectUntilLineEnd,
+    SelectUntilLineStart,
+}
+
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum EditorAction {
     Move(Direction),
     Insert(char),
     Backspace,
-    Save,
-    Quit,
+    Run(Command),
+    Execute(Macro),
     Unhandled(String),
 }
 
@@ -38,12 +61,14 @@ impl Editor {
     }
 
     pub fn eval(&mut self, action: EditorAction) -> () {
+        use Command::*;
         use Direction::*;
         use EditorAction::*;
+        use Macro::*;
 
         match action {
-            Save => {}
             Unhandled(_) => {}
+
             Move(Up) => {
                 self.move_up();
             }
@@ -62,7 +87,23 @@ impl Editor {
             Backspace => {
                 self.perform_backspace();
             }
-            Quit => self.running = false,
+
+            Run(Quit) => self.running = false,
+            Run(Save) => {}
+            Run(OpenFile) => {}
+            Run(NewBuffer) => {}
+            Run(Copy) => {}
+            Run(Paste) => {}
+            Run(Cut) => {}
+            Run(SwitchBuffer) => {}
+
+            Execute(SelectChar) => {}
+            Execute(SelectLine) => {}
+            Execute(SelectAll) => {}
+            Execute(SelectUntilBufferEnd) => {}
+            Execute(SelectUntilBufferStart) => {}
+            Execute(SelectUntilLineEnd) => {}
+            Execute(SelectUntilLineStart) => {}
         }
     }
 
