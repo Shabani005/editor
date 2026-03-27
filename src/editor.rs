@@ -27,6 +27,10 @@ pub enum Macro {
     SelectUntilBufferStart,
     SelectUntilLineEnd,
     SelectUntilLineStart,
+    MoveUntilLineStart,
+    MoveUntilLineEnd,
+    MoveUntilBufferStart,
+    MoveUntilBufferEnd,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -100,10 +104,16 @@ impl Editor {
             Execute(SelectChar) => {}
             Execute(SelectLine) => {}
             Execute(SelectAll) => {}
+
             Execute(SelectUntilBufferEnd) => {}
             Execute(SelectUntilBufferStart) => {}
             Execute(SelectUntilLineEnd) => {}
             Execute(SelectUntilLineStart) => {}
+
+            Execute(MoveUntilLineStart) => {}
+            Execute(MoveUntilLineEnd) => {}
+            Execute(MoveUntilBufferStart) => {}
+            Execute(MoveUntilBufferEnd) => {}
         }
     }
 
